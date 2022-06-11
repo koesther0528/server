@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name ="google-signin-client_id" content="629119027267-ovev3hiqp6koa1c78adlek84rakhfcs9.apps.googleusercontent.com">
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="img/logo2.png"
+    />
+    <title>프젝돔이</title>
+    <link rel="stylesheet" href="css/login.css" />
+  </head>
+  <body>
+    <a href="#" onclick="googleLogout();">Sign out</a>
+     <script>
+       function init() {
+	      gapi.load('auth2', function() {
+		    gapi.auth2.init();
+		    options = new gapi.auth2.SigninOptionsBuilder();
+	    	options.setPrompt('select_account');
+	    	options.setScope('email profile openid https://www.googleapis.com/auth/user.birthday.read');
+		    gapi.auth2.getAuthInstance().attachClickHandler('googleLogin', options, onSignIn, onSignInFailure);
+	    })
+  }
+
+function onSignIn(googleUser) {
+	var access_token = googleUser.getAuthResponse().access_token
+	$.ajax({
+		url: 'https://people.googleapis.com/v1/people/me'
+		, data: {personFields:'birthdays', key:'AIzaSyBOdmeC4SOSzXmPGLEM2vZueqiBSWKg3wk', 'access_token': access_token}
+		, method:'GET'
+	})
+	.done(function(e){
+		var profile = googleUser.getBasicProfile();
+		console.log(profile)
+	})
+	  .fail(function(e){
+		  console.log(e);
+	  })
+  }
+    function onSignInFailure(t){		
+	    console.log(t);
+    }
+  function googleLogout(){
+    function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+}
+  </script>
+</script>
+  <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+    <div class="mid">
+      <div class="logo">
+        <img
+          src="img/logo.png"
+          style="width: 450px; height: 450px; margin-top: 20px"
+        />
+      </div>
+      <div class="info" style="font-size: 15pt">
+        <h1 style="margin-top: 0%; margin-bottom: 50px">
+          이제는 기록으로 함께 프젝돔이
+        </h1>
+      </div>
+      <div class="login_btn">
+        <button type="submit" class="btn">
+          <!-- <a href="main.html"
+            ><img src="img/google.png" style="width: 300px"
+          /></a> -->
+          <a id="googleLogin" href="javascript:void(0)">
+            <!-- onClick="mainPage(); return false;" -->
+            <img src="img/google.png" style="width: 300px"/>
+          </a>
+          <a id="googleLogin" onClick="mainPage(); return false;"></a>
+        </button>
+        <p></p>
+        <button type="submit" class="btn">
+          <a href="main.html"
+            ><img src="img/kakao.png" style="width: 300px"
+          /></a>
+        </button>
+        <p></p>
+        <button type="submit" class="btn">
+          <a href="main.html"
+            ><img src="img/naver.png" style="width: 300px"
+          /></a>
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
